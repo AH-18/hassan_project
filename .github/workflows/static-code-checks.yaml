@@ -1,0 +1,37 @@
+name: Static Code Checks
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+
+permissions:
+  contents: read
+
+jobs:
+  static_code_checks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.7
+    - name: "Terraform Formatting"
+      run: terraform fmt -recursive -check
+    - name: "Terraform Init"
+      run: terraform init
+    - uses: terraform-linters/setup-tflint@v4
+      with:
+        tflint_version: v0.44.1
+    - name: "Linting"
+      run: |
+        tflint --version
+        tflint --init
+        tflint --config=.tflint.hcl --chdir=./
+    - name: "TFSec Scan"
+      uses: aquasecurity/tfsec-action@v1.0.0
+      with:
+        additional_args: "--force-all-dirs"
