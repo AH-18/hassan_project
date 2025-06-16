@@ -20,7 +20,7 @@ resource "aws_ecr_repository" "this" {
 
   encryption_configuration {
     encryption_type = var.encryption_type
-    kms_key        = var.kms_key_id
+    kms_key         = var.kms_key_id
   }
 
   tags = merge(local.default_tags, var.tags)

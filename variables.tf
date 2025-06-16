@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region where resources will be created"
   type        = string
-  default     = "us-east-1"  # Change this to your preferred region
+  default     = "us-east-1" # Change this to your preferred region
 }
 
 variable "secondary_region" {
@@ -47,7 +47,7 @@ variable "tags" {
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC."
   type        = string
-} 
+}
 
 variable "public_subnets" {
   description = "A list of public subnets, each defined by its CIDR block, availability zone, and public IP mapping configuration."

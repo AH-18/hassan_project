@@ -13,15 +13,15 @@ public_subnets = [
   { cidr = "10.0.0.0/20", availability_zone = "us-east-1a", map_public_ip_on_launch = true }
 ]
 
-  
+
 
 enable_s3_endpoint = false
 
 
 # Load Balancer Configuration
-lb_name            = "scoold-alb-dev"
-lb_internal        = false
-lb_listener_port   = 80
+lb_name              = "scoold-alb-dev"
+lb_internal          = false
+lb_listener_port     = 80
 lb_listener_protocol = "HTTP"
 
 lb_target_groups = {
@@ -33,12 +33,12 @@ lb_target_groups = {
     health_check = {
       enabled             = true
       healthy_threshold   = 3
-      interval           = 30
-      matcher            = "200"
-      path              = "/health"
-      port              = "traffic-port"
-      protocol          = "HTTP"
-      timeout           = 5
+      interval            = 30
+      matcher             = "200"
+      path                = "/health"
+      port                = "traffic-port"
+      protocol            = "HTTP"
+      timeout             = 5
       unhealthy_threshold = 3
     }
   }
@@ -47,7 +47,7 @@ lb_target_groups = {
 
 
 # EC2 Configuration
-ami_id       = "ami-1234567890abcdef0"
+ami_id        = "ami-1234567890abcdef0"
 instance_type = "t2.micro"
 keypair_name  = "my-keypair"
 
