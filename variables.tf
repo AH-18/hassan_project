@@ -4,11 +4,11 @@ variable "aws_region" {
   default     = "us-east-1" # Change this to your preferred region
 }
 
-variable "secondary_region" {
-  type        = string
-  description = "The AWS region"
-  default     = "us-east-2"
-}
+# variable "secondary_region" {
+#   type        = string
+#   description = "The AWS region"
+#   default     = "us-east-2"
+# }
 
 variable "environment" {
   type        = string
@@ -60,10 +60,10 @@ variable "public_subnets" {
 }
 
 
-variable "enable_s3_endpoint" {
-  description = "Enable the creation of an S3 Gateway Endpoint"
-  type        = bool
-}
+# variable "enable_s3_endpoint" {
+#   description = "Enable the creation of an S3 Gateway Endpoint"
+#   type        = bool
+# }
 
 
 ###########################################
@@ -86,10 +86,10 @@ variable "keypair_name" {
   type        = string
 }
 
-variable "instance_name" {
-  description = "The name to assign to the EC2 instance for identification purposes."
-  type        = string
-}
+# variable "instance_name" {
+#   description = "The name to assign to the EC2 instance for identification purposes."
+#   type        = string
+# }
 
 variable "ingress_rules" {
   description = "List of ingress rules for EC2 security group."
