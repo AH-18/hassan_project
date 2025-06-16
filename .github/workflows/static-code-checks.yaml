@@ -1,10 +1,5 @@
 name: Static Code Checks
-on:
-  pull_request:
-  push:
-    branches:
-      - 'main'
-      - 'releases/**'
+on: push 
 
 permissions:
   contents: read
