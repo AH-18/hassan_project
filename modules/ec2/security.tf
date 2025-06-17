@@ -61,6 +61,13 @@ resource "aws_iam_role" "this" {
   tags = merge(local.default_tags, var.tags)
 }
 
+
+resource "aws_iam_role_policy_attachment" "ecr_poweruser" {
+  role       = aws_iam_role.this.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
+
 resource "aws_iam_policy_attachment" "this" {
   count = length(var.iam_permissions)
 

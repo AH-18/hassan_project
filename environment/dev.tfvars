@@ -48,8 +48,8 @@ enable_s3_endpoint = false
 
 # EC2 Configuration
 ami_id        = "ami-020cba7c55df1f615"
-instance_type = "t2.micro"
-keypair_name  = "key_pair_moba"
+instance_type = "t3.large"
+keypair_name  = "soner_key"
 
 # Example security group rules
 ingress_rules = [
