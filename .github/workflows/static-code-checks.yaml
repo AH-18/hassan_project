@@ -1,5 +1,5 @@
 name: Static Code Checks
-on: workflow_dispatch
+on: push
 
 permissions:
   contents: read
