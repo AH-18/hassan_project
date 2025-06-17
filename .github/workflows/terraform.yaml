@@ -1,0 +1,68 @@
+name: provisioning
+
+on: push
+    
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+
+    - name: Terraform setup
+      uses: hashicorp/setup-terraform@v2
+
+
+    - name: Terraform Init
+      working-directory: ./terraform/
+      run:  terraform init
+
+
+    - name: Terraform Validate
+      working-directory: ./terraform/
+      run: terraform validate -no-color
+
+
+    - name: Terraform Formating Check
+      run: |
+        terraform fmt -recursive -check || true
+
+
+    - name: Terraform Plan
+      working-directory: ./terraform/
+      run: |
+          terraform plan -var-file="environment/dev.tfvars" \
+            -var "access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+            -var "secret_key=${{ secrets.AWS_SECRET_KEY }}"
+
+
+    - uses: terraform-linters/setup-tflint@v4
+      with:
+          tflint_version: v0.44.1
+
+    - name: "Linting"
+      run: |
+          tflint --version
+          tflint --init
+          tflint --config=.tflint.hcl --chdir=./
+
+    - name: "TFSec Scan"
+      uses: aquasecurity/tfsec-action@v1.0.0
+      with:
+          additional_args: "--force-all-dirs"
+          soft_fail: true        
+
+
+
+    # - name: Terraform Apply
+    #   working-directory: ./terraform/
+    #   if: github.ref == 'refs/heads/main'
+    #   run: |
+    #       terraform apply  -auto-approve -no-color -var-file=environment/sandbox.tfvars \
+    #         -var "access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+    #         -var "secret_key=${{ secrets.AWS_SECRET_KEY }}"
