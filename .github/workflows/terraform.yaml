@@ -27,10 +27,10 @@ jobs:
         run: terraform fmt -recursive -check || true
 
       - name: Terraform Plan
-        run: |
-          terraform plan -var-file="environment/dev.tfvars" \
-            -var "access_key=${{ secrets.AWS_ACCESS_KEY }}" \
-            -var "secret_key=${{ secrets.AWS_SECRET_KEY }}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        run: terraform plan -var-file="environment/dev.tfvars"
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
@@ -48,7 +48,6 @@ jobs:
         with:
           additional_args: "--force-all-dirs"
           soft_fail: true
-
 
 
     # - name: Terraform Apply
