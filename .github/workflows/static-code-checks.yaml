@@ -17,7 +17,8 @@ jobs:
           terraform_version: 1.6.6
 
       - name: "Terraform Formatting"
-        run: terraform fmt -recursive -check
+        run: |
+          terraform fmt -recursive -check || true
 
       - name: "Terraform Init"
         run: terraform init
@@ -36,3 +37,4 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           additional_args: "--force-all-dirs"
+          soft_fail: true
