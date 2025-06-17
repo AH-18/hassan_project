@@ -2,7 +2,7 @@
 aws_region       = "us-east-1"
 secondary_region = ""
 environment      = "dev"
-project          = "scoold"
+project          = "sonerqube-server"
 
 
 # vpc & network variables 
@@ -18,38 +18,38 @@ public_subnets = [
 enable_s3_endpoint = false
 
 
-# Load Balancer Configuration
-lb_name              = "scoold-alb-dev"
-lb_internal          = false
-lb_listener_port     = 80
-lb_listener_protocol = "HTTP"
+# # Load Balancer Configuration
+# lb_name              = "scoold-alb-dev"
+# lb_internal          = false
+# lb_listener_port     = 80
+# lb_listener_protocol = "HTTP"
 
-lb_target_groups = {
-  scoold = {
-    name        = "scoold-tg"
-    port        = 8000
-    protocol    = "HTTP"
-    target_type = "ip"
-    health_check = {
-      enabled             = true
-      healthy_threshold   = 3
-      interval            = 30
-      matcher             = "200"
-      path                = "/health"
-      port                = "traffic-port"
-      protocol            = "HTTP"
-      timeout             = 5
-      unhealthy_threshold = 3
-    }
-  }
-}
+# lb_target_groups = {
+#   scoold = {
+#     name        = "scoold-tg"
+#     port        = 8000
+#     protocol    = "HTTP"
+#     target_type = "ip"
+#     health_check = {
+#       enabled             = true
+#       healthy_threshold   = 3
+#       interval            = 30
+#       matcher             = "200"
+#       path                = "/health"
+#       port                = "traffic-port"
+#       protocol            = "HTTP"
+#       timeout             = 5
+#       unhealthy_threshold = 3
+#     }
+#   }
+# }
 
 
 
 # EC2 Configuration
-ami_id        = "ami-1234567890abcdef0"
+ami_id        = "ami-020cba7c55df1f615"
 instance_type = "t2.micro"
-keypair_name  = "my-keypair"
+keypair_name  = "key_pair_moba"
 
 # Example security group rules
 ingress_rules = [
@@ -66,5 +66,13 @@ ingress_rules = [
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  },
+  {
+    description = "Allow sonerqube access"
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
+
 ]

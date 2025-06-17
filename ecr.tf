@@ -1,5 +1,5 @@
 # ECR Repositories
-module "ecr_scoold" {
+module "ecr_repository" {
   source = "./modules/ecr"
 
   repository_name      = "${var.project}-ecr-${var.environment}"
