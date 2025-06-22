@@ -31,6 +31,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_KEY }}
         run: |
           terraform plan -no-color -input=false -var-file=environment/dev.tfvars
 
@@ -57,5 +59,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_KEY }}
         run: |
           terraform apply -auto-approve -no-color -input=false -var-file=environment/dev.tfvars
