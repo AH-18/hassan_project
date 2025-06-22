@@ -24,7 +24,7 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Formatting
-        run: terraform fmt -recursive -check || true
+        run: terraform fmt -recursive -check
 
       - name: Terraform Plan
         env:
@@ -51,7 +51,6 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           additional_args: "--force-all-dirs"
-          soft_fail: true
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
