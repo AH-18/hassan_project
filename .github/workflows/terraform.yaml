@@ -30,7 +30,9 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-        run: terraform plan -var-file="environment/dev.tfvars"
+          AWS_DEFAULT_REGION: us-east-1
+        run: |
+          terraform plan -no-color -var-file=environment/dev.tfvars
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
