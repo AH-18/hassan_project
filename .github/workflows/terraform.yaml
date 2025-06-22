@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for SonarQube analysis
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -25,6 +27,13 @@ jobs:
 
       - name: Terraform Formatting
         run: terraform fmt -recursive -check
+
+      - name: SonarQube Analysis
+        uses: sonarqube-quality-gate-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Terraform Plan
         env:
