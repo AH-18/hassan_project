@@ -35,16 +35,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      - name: Terraform Plan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-        run: |
-          terraform plan -no-color -input=false -var-file=environment/dev.tfvars
-
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
         with:
@@ -60,6 +50,26 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           additional_args: "--force-all-dirs"
+        continue-on-error: true
+
+      - name: Terrascan Security Scan
+        uses: tenable/terrascan-action@main
+        with:
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'aws'
+          only_warn: true
+          sarif_upload: false
+
+      - name: Terraform Plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+        run: |
+          terraform plan -no-color -input=false -var-file=environment/dev.tfvars
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'

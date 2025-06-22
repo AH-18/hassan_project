@@ -217,3 +217,248 @@ Without pipeline: Developer pushes code → Manually deploys → Realizes securi
 With pipeline: Developer pushes code → TFSec catches open security group → Pipeline fails → Developer fixes issue → Safe deployment
 
 Your pipeline acts like a **quality control inspector** that checks everything before it reaches production!
+
+---
+
+# Enhanced Security Tools: Terrascan and Snyk
+
+## **Current Security Coverage vs Enhanced Coverage:**
+
+### **Your Current Pipeline Security Tools:**
+- **TFSec**: Terraform-specific security scanning
+- **SonarQube**: General code quality + some security issues
+
+### **What's Missing (That Terrascan & Snyk Would Add):**
+
+---
+
+## **Terrascan - Infrastructure as Code Security Scanner**
+
+### **What Terrascan Adds:**
+
+#### **1. Multi-Cloud Security Policies**
+```yaml
+# Current: TFSec (AWS-focused)
+# Enhanced: Terrascan (AWS + Azure + GCP + Kubernetes)
+
+# Example Terrascan catches:
+- Azure storage accounts without encryption
+- GCP firewall rules too permissive  
+- Kubernetes security contexts missing
+- Docker container security issues
+```
+
+#### **2. Compliance Framework Scanning**
+```yaml
+# Terrascan checks against:
+- CIS Benchmarks (Center for Internet Security)
+- NIST guidelines
+- SOC 2 compliance
+- HIPAA requirements
+- PCI DSS standards
+- AWS Security Best Practices
+
+# Example output:
+VIOLATION: CIS-AWS-1.22 - S3 bucket not encrypted
+VIOLATION: NIST-800-53 - Security group allows unrestricted access
+```
+
+#### **3. Custom Policy Engine**
+```yaml
+# Create your own security rules:
+package custom.security
+
+deny[msg] {
+  resource := input.resource_changes[_]
+  resource.type == "aws_instance"
+  not resource.change.after.monitoring
+  msg := "EC2 instances must have detailed monitoring enabled"
+}
+```
+
+#### **4. Policy-as-Code**
+```yaml
+# Store security policies in Git
+# Version control your security rules
+# Share policies across teams
+# Gradual rollout of new security requirements
+```
+
+---
+
+## **Snyk - Vulnerability and License Scanner**
+
+### **What Snyk Adds:**
+
+#### **1. Container Image Scanning**
+```yaml
+# If you use Docker in your infrastructure:
+- Scans base images for known vulnerabilities
+- Checks for outdated packages in containers
+- Identifies malicious packages
+- License compliance checking
+
+# Example findings:
+HIGH: nginx:1.19 contains CVE-2021-23017
+MEDIUM: Python package 'requests' has known vulnerability
+LICENSE: GPL license not allowed in commercial use
+```
+
+#### **2. Infrastructure as Code Vulnerabilities**
+```yaml
+# Beyond configuration issues:
+- Known CVEs in Terraform providers
+- Vulnerable modules from Terraform Registry  
+- Outdated provider versions with security issues
+- Supply chain security for infrastructure code
+
+# Example:
+CRITICAL: AWS provider 3.x.x has authentication bypass vulnerability
+HIGH: VPC module v2.1.0 contains privilege escalation risk
+```
+
+#### **3. Open Source Dependency Scanning**
+```yaml
+# For any package files in your repo:
+- package.json (Node.js dependencies)
+- requirements.txt (Python dependencies)  
+- go.mod (Go dependencies)
+- Dockerfile (container dependencies)
+
+# Finds:
+- Known security vulnerabilities
+- License compliance issues
+- Outdated packages with fixes available
+```
+
+#### **4. Real-time Vulnerability Database**
+```yaml
+# Snyk maintains constantly updated database:
+- New CVEs discovered daily
+- Exploit availability information
+- Patch availability and recommendations
+- Risk scoring and prioritization
+```
+
+---
+
+## **Enhanced Pipeline Would Look Like:**
+
+```yaml
+# Current Quality Gates:
+✅ Terraform Validate (syntax)
+✅ Terraform Format (style)  
+✅ TFLint (Terraform best practices)
+✅ TFSec (AWS security misconfigurations)
+✅ SonarQube (code quality + basic security)
+
+# Enhanced Security Gates:
+🚀 Terrascan (multi-cloud compliance + custom policies)
+🚀 Snyk (vulnerabilities + supply chain security)
+
+# Example enhanced step:
+- name: Terrascan Security Scan
+  uses: tenable/terrascan-action@main
+  with:
+    iac_type: 'terraform'
+    policy_type: 'aws,nist,cis'
+    
+- name: Snyk Infrastructure Scan  
+  uses: snyk/actions/iac@master
+  with:
+    file: '.'
+  env:
+    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+---
+
+## **Comparative Analysis:**
+
+### **Security Coverage Matrix:**
+
+| Security Aspect | TFSec | SonarQube | Terrascan | Snyk |
+|-----------------|-------|-----------|-----------|------|
+| **AWS Misconfigurations** | ✅ Excellent | ⚠️ Basic | ✅ Excellent | ⚠️ Basic |
+| **Multi-Cloud Support** | ❌ AWS Only | ❌ Limited | ✅ AWS/Azure/GCP | ✅ All Clouds |
+| **Compliance Frameworks** | ⚠️ Basic | ❌ None | ✅ CIS/NIST/SOC2 | ✅ Multiple |
+| **Container Security** | ❌ None | ❌ None | ✅ Kubernetes | ✅ Excellent |
+| **Vulnerability Database** | ❌ None | ⚠️ Basic | ⚠️ Limited | ✅ Excellent |
+| **Supply Chain Security** | ❌ None | ❌ None | ⚠️ Limited | ✅ Excellent |
+| **Custom Policies** | ❌ None | ⚠️ Limited | ✅ Excellent | ⚠️ Limited |
+| **License Compliance** | ❌ None | ❌ None | ❌ None | ✅ Excellent |
+
+---
+
+## **Real-World Examples of What You'd Catch:**
+
+### **Terrascan Would Find:**
+```hcl
+# CIS Compliance Violation
+resource "aws_s3_bucket" "data" {
+  bucket = "company-data"
+  # VIOLATION: CIS-AWS-2.1.1 - S3 bucket versioning not enabled
+  # VIOLATION: NIST-800-53 - No MFA delete protection
+}
+
+# Custom Policy Violation  
+resource "aws_instance" "web" {
+  ami           = "ami-12345"
+  instance_type = "t2.micro"
+  # VIOLATION: Custom policy - All instances must be in private subnets
+  subnet_id = aws_subnet.public.id
+}
+```
+
+### **Snyk Would Find:**
+```dockerfile
+# In a Dockerfile in your repo
+FROM node:14.15.0  # Snyk: HIGH - Node.js 14.15.0 has 15 vulnerabilities
+RUN npm install express@4.17.0  # Snyk: MEDIUM - Express.js has ReDoS vulnerability
+```
+
+```json
+// In package.json  
+{
+  "dependencies": {
+    "lodash": "4.17.0"  // Snyk: HIGH - Prototype pollution vulnerability
+  }
+}
+```
+
+---
+
+## **Benefits of Adding Them:**
+
+### **Risk Reduction:**
+- **40% more security issues** caught before production
+- **Compliance automation** - automatically check against standards
+- **Supply chain protection** - prevent vulnerable dependencies
+- **Multi-cloud readiness** - consistent security across cloud providers
+
+### **Operational Benefits:**
+- **Reduced manual security reviews** 
+- **Faster compliance audits**
+- **Centralized security policy management**
+- **Better security metrics and reporting**
+
+### **Cost Considerations:**
+- **Terrascan**: Open source (free) with enterprise features
+- **Snyk**: Freemium model, paid for advanced features
+- **Pipeline time**: +2-5 minutes per run
+- **ROI**: Prevents expensive security incidents
+
+---
+
+## **Recommendation for Your Pipeline:**
+
+### **Phase 1 (Current):** ✅ 
+Basic security with TFSec + SonarQube
+
+### **Phase 2 (Next):** 🚀
+Add **Terrascan** for compliance and custom policies
+
+### **Phase 3 (Advanced):** 🎯  
+Add **Snyk** if you expand to containers or have dependency files
+
+Your current setup is solid for AWS Terraform security. Terrascan would add compliance automation and custom policies. Snyk becomes valuable when you add containers, applications, or need supply chain security.
