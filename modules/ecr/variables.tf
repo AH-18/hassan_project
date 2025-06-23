@@ -6,7 +6,7 @@ variable "repository_name" {
 variable "image_tag_mutability" {
   description = "The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE"
   type        = string
-  default     = "MUTABLE"
+  default     = "IMMUTABLE"  # Security: Prevent tag overwriting
 }
 
 variable "scan_on_push" {
@@ -18,7 +18,7 @@ variable "scan_on_push" {
 variable "encryption_type" {
   description = "The encryption type for the repository. Must be AES256 or KMS"
   type        = string
-  default     = "AES256"
+  default     = "KMS"  # Security: Use KMS for better key management
 }
 
 variable "kms_key_id" {
