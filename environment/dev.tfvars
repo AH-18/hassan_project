@@ -18,31 +18,7 @@ public_subnets = [
 enable_s3_endpoint = false
 
 
-# # Load Balancer Configuration
-# lb_name              = "scoold-alb-dev"
-# lb_internal          = false
-# lb_listener_port     = 80
-# lb_listener_protocol = "HTTP"
 
-# lb_target_groups = {
-#   scoold = {
-#     name        = "scoold-tg"
-#     port        = 8000
-#     protocol    = "HTTP"
-#     target_type = "ip"
-#     health_check = {
-#       enabled             = true
-#       healthy_threshold   = 3
-#       interval            = 30
-#       matcher             = "200"
-#       path                = "/health"
-#       port                = "traffic-port"
-#       protocol            = "HTTP"
-#       timeout             = 5
-#       unhealthy_threshold = 3
-#     }
-#   }
-# }
 
 
 
